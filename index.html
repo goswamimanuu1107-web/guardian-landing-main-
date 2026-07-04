@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Guardian — know the moment your AI quietly breaks something</title>
+<meta name="description" content="Paste the link to the app you built with Lovable, Bolt, Replit, or any AI tool. Guardian checks it like a real user and tells you, in plain English, what still works." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E1A24;
+    --ink-soft:#16273A;
+    --surface:#F6F4EF;
+    --line:#22384D;
+    --good:#2FBF8F;
+    --warn:#F0A93A;
+    --bad:#E8654F;
+    --text-dim:#9FB3C4;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--surface);
+    font-family:'IBM Plex Sans', sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:'IBM Plex Mono', monospace;}
+  .wrap{max-width:920px;margin:0 auto;padding:0 24px;}
+
+  nav{display:flex;align-items:center;justify-content:space-between;padding:24px 0;}
+  .brand{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:19px;letter-spacing:-0.01em;}
+  .brand-mark{width:22px;height:22px;border-radius:6px;background:var(--good);position:relative;flex:none;}
+  .brand-mark::after{content:"";position:absolute;inset:6px;border-radius:3px;background:var(--ink);}
+  .navcta{border:1px solid var(--line);padding:9px 16px;border-radius:8px;color:var(--surface);text-decoration:none;font-size:13.5px;font-family:'IBM Plex Mono',monospace;}
+  .navcta:hover{border-color:var(--good);}
+
+  .hero{padding:56px 0 20px;text-align:left;}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--good);letter-spacing:.06em;text-transform:uppercase;margin-bottom:16px;display:inline-block;}
+  h1{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:clamp(34px,5.4vw,56px);
+    line-height:1.06;
+    letter-spacing:-0.02em;
+    margin:0 0 20px;
+    max-width:15ch;
+  }
+  h1 em{font-style:normal;color:var(--good);}
+  .sub{color:var(--text-dim);font-size:18px;max-width:56ch;margin:0 0 34px;}
+
+  .cta-row{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
+  .btn{
+    background:var(--good);
+    color:#08251c;
+    border:none;
+    padding:15px 26px;
+    border-radius:10px;
+    font-weight:600;
+    font-size:15.5px;
+    cursor:pointer;
+    text-decoration:none;
+    display:inline-block;
+    font-family:'IBM Plex Sans',sans-serif;
+  }
+  .btn:hover{filter:brightness(1.08);}
+  .micro{color:var(--text-dim);font-size:13px;font-family:'IBM Plex Mono',monospace;}
+
+  .pulse-wrap{margin:40px 0 60px;border:1px solid var(--line);border-radius:var(--radius);background:var(--ink-soft);overflow:hidden;}
+  .pulse-header{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text-dim);}
+  .pulse-dot{width:7px;height:7px;border-radius:50%;background:var(--good);display:inline-block;margin-right:6px;animation:blink 2s infinite;}
+  @keyframes blink{0%,100%{opacity:1;}50%{opacity:.35;}}
+  svg.pulse{display:block;width:100%;height:90px;}
+  .pulse-path{fill:none;stroke:var(--good);stroke-width:2;}
+
+  section{padding:50px 0;border-top:1px solid var(--line);}
+  h2{font-family:'Space Grotesk',sans-serif;font-size:clamp(22px,3vw,30px);font-weight:600;margin:0 0 32px;letter-spacing:-0.01em;}
+
+  .pains{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;}
+  .pain-card{border:1px solid var(--line);background:var(--ink-soft);border-radius:12px;padding:20px;}
+  .pain-card .icon{color:var(--bad);font-family:'IBM Plex Mono',monospace;font-size:13px;margin-bottom:10px;}
+  .pain-card p{margin:0;color:var(--text-dim);font-size:14.5px;}
+
+  .steps{display:flex;flex-direction:column;gap:0;}
+  .step{display:flex;gap:20px;padding:22px 0;border-bottom:1px solid var(--line);}
+  .step:last-child{border-bottom:none;}
+  .step-num{font-family:'IBM Plex Mono',monospace;color:var(--good);font-size:14px;flex:none;width:28px;padding-top:2px;}
+  .step-body h3{margin:0 0 6px;font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:600;}
+  .step-body p{margin:0;color:var(--text-dim);font-size:14.5px;max-width:56ch;}
+
+  .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px;}
+  .chip{border:1px solid var(--line);border-radius:20px;padding:7px 14px;font-size:13px;color:var(--text-dim);font-family:'IBM Plex Mono',monospace;}
+
+  .final{text-align:center;padding:70px 0 90px;}
+  .final h2{margin-bottom:14px;}
+  .final p{color:var(--text-dim);max-width:48ch;margin:0 auto 28px;}
+
+  footer{color:var(--text-dim);font-size:12.5px;padding:36px 0 40px;border-top:1px solid var(--line);text-align:center;}
+  a.link{color:var(--good);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <div class="brand"><span class="brand-mark"></span>Guardian</div>
+    <a class="navcta" href="#waitlist">Join waitlist →</a>
+  </nav>
+
+  <section class="hero" style="border-top:none;">
+    <span class="eyebrow">for people building with AI, not code</span>
+    <h1>Know the moment your AI <em>quietly breaks</em> something.</h1>
+    <p class="sub">You built your app with Lovable, Bolt, Replit, or Base44. It worked. Then you asked the AI to add one more thing — and now something else is quietly broken, and you have no idea what.</p>
+
+    <div class="cta-row">
+      <a class="btn" href="#waitlist">Get early access</a>
+      <span class="micro">Free while in beta · No credit card</span>
+    </div>
+
+    <div class="pulse-wrap">
+      <div class="pulse-header"><span><span class="pulse-dot"></span>what Guardian watches for</span><span>preview</span></div>
+      <svg class="pulse" viewBox="0 0 600 90" preserveAspectRatio="none">
+        <path class="pulse-path" d="M0,45 L140,45 L155,15 L170,75 L185,45 L260,45 L275,20 L285,45 L360,45 L375,68 L392,10 L405,45 L470,45 L600,45" />
+      </svg>
+    </div>
+  </section>
+
+  <section id="pain">
+    <h2>The part nobody warns you about</h2>
+    <div class="pains">
+      <div class="pain-card"><div class="icon">// 01</div><p>You ask AI to fix the checkout page. It fixes checkout — and quietly breaks the signup form you built last week.</p></div>
+      <div class="pain-card"><div class="icon">// 02</div><p>You don't know how to read code, so you can't tell what changed or why something stopped working.</p></div>
+      <div class="pain-card"><div class="icon">// 03</div><p>You find out something's broken only when a real user tells you — sometimes days later.</p></div>
+    </div>
+  </section>
+
+  <section id="how">
+    <h2>How Guardian helps</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <h3>Paste your app's link</h3>
+          <p>The one your AI builder gave you — no setup, no code, no account needed to try it.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <h3>Guardian clicks through it like a real user</h3>
+          <p>Buttons, forms, links — it tries what a visitor would try, and watches for anything that misbehaves.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <h3>Get a plain-English report</h3>
+          <p>"Signup still works. Checkout button stopped responding after your last change." No jargon.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="who">
+    <h2>Built for builders, not engineers</h2>
+    <p class="sub" style="margin-bottom:16px;">If you're shipping with any of these, Guardian is for you:</p>
+    <div class="chips">
+      <span class="chip">Lovable</span>
+      <span class="chip">Bolt</span>
+      <span class="chip">Replit</span>
+      <span class="chip">Base44</span>
+      <span class="chip">Cursor</span>
+      <span class="chip">v0</span>
+      <span class="chip">Any AI app builder</span>
+    </div>
+  </section>
+
+  <section id="waitlist" class="final" style="border-top:1px solid var(--line);">
+    <h2>Be first to try it</h2>
+    <p>We're opening early access to a small group first. Join the waitlist and we'll email you the moment it's your turn.</p>
+    <a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLScftrT1KupxqkVRw03PktQc5UDCpWX640kaZI2itenzTUzvnA/viewform" target="_blank" rel="noopener">Join the waitlist</a>
+  </section>
+
+  <footer>
+    Guardian only ever tests apps you confirm you own or have permission to test. &nbsp;·&nbsp; Built in public.
+  </footer>
+</div>
+</body>
+</html>
